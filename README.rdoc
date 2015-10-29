@@ -1,0 +1,222 @@
+= Discontinued
+
+I decided to discontinue the development of this library to concentrate my efforts on other projects.
+
+Some of the helpers available in this library have been included in Rails itself or are no longer applicable against the Rails 3 and 4 releases.
+If you are interested in some specific helper, just copy and paste the code in your app.
+
+Now back to your original README content...
+
+
+= Helperful
+
+Helperful aims to be a collection of useful and reusable Rails helpers.
+
+
+== Requirements
+
+* Ruby >= 1.8.6
+* Rails >= 2.2.x (tested up to Rails 2.3.3)
+
+
+== Plugin Installation
+
+=== As a Gem
+
+This is the preferred way to install Helperful and the best way if you want install a stable version.
+The GEM is hosted on {Gemcutter}[http://gemcutter.org/gems/helperful].
+
+  $ gem install helperful --source http://gemcutter.org
+
+With Rails >= 2.2, you can specify the GEM dependency in your environment.rb file so that Rails will automatically check the requirement on startup.
+
+  Rails::Initializer.run do |config|
+    
+    # other configurations
+    # ...
+    
+    config.gem "helperful", :source => "http://gemcutter.org"
+
+  end
+
+
+=== As a Plugin
+
+This is the preferred way if you want to live on the edge and install a development version.
+
+  $ script/plugin install git://github.com/weppos/helperful.git
+
+
+== Getting Started
+
+Helper methods are grouped into different files according to their scope.
+
+Before using an helper method you should include the helper file in your Rails application,
+as you would expected to do for a standard Rails helper.
+All helpers belongs to the Helperful namespace to prevent conflicts with default Rails helpers.
+Don't forget to add the namespace when including an helper from your controller.
+
+  class MyController < ApplicationController
+
+    # include the title_helper
+    helper 'helperful/title'
+
+    # include the title_helper passing the qualified the module name
+    helper Helperful::TitleHelper
+
+  end
+
+
+Moreover, the <tt>Helperful</tt> library provides a helpful method called <tt>helperful</tt>.
+It aliases the standard Rails <tt>ActionController::Base#helper</tt> method with the exception that it automatically prepends the <tt>helperful</tt> namespace when necessary.
+
+  class MyController < ApplicationController
+
+    # include the title_helper
+    helperful :title
+
+    # include the title_helper passing the qualified the module name
+    helperful Helperful::TitleHelper
+
+  end
+
+
+The following lines are equivalent:
+
+  helper    'helperful/title'
+  helper    :'helperful/title'
+  helper    Helperful::TitleHelper
+  helperful 'title'
+  helperful :title
+  helperful Helperful::TitleHelper
+
+
+The <tt>helperful</tt> methods accepts any parameter accepted by the original <tt>helper</tt> method.
+
+  helper    'helperful/title', 'helperful/affiliations'
+  helperful :title, :affiliations
+
+
+See the Rails documentation for <tt>ActionController::Base#helper</tt> method
+for more details about how to include an helper into a Rails application.
+
+Once included, all helper methods are available in the View.
+
+  <html>
+    <title><%= title 'This is a title' %></title>
+    <body>
+      <%= yield %>
+    </body>
+  </html>
+
+
+== Helpers
+
+This is a short description of all available helpers.
+Please refer to the documentation available at the beginning of any helper file for further details.
+
+=== Asset Tag Helper
+
+Provides a set of helpers for generating HTML that links views to assets such as images, javascripts, stylesheets, and feeds.
+
+=== Affiliations Helper
+
+Provides a set of helpers for working with online affiliations.
+
+The <tt>tradedoubler_verification_tag</tt> helper method returns the site verification tag required by {Tradedoubler}[http://www.tradedoubler.com/] to verify the publisher account ownership.
+
+  # In your template
+  <html>
+    <head>
+      <%= tradedoubler_verification_tag('00112233') %>
+    </head>
+    <body>
+      This is your page content.
+    </body>
+  </html>
+
+  # Will produce the following output.
+  <html>
+    <head>
+      <%= tradedoubler_verification_tag('00112233') %>
+    </head>
+    <body>
+      <!-- TradeDoubler site verification 00112233 -->
+    </body>
+  </html>
+
+=== Content Helper
+
+Provides a set of helpers for capturing and working with your page content in a more effective way.
+
+The <tt>has_content?</tt> helper is a natural fulfillment for the original <tt>content_for</tt> helper.
+
+  <% content_for :foo do %>
+    <div>This is a foo content.</div>
+  <% end %>
+
+  <% has_content? :foo  # => true %>
+  <% has_content? "foo" # => true %>
+
+
+=== Javascript Helper
+
+Provides a set of helpers for working with JavaScript in your views.
+
+The <tt>javascript_content_for</tt> helper combines the features of <tt>content_for</tt> and <tt>javascript_tag</tt> into a single helper.
+
+  <% javascript_content_for :head do %>
+    $("#id").hide();
+  <% end %>
+
+The code above looks like much more readable than the following one. Isn't it?
+
+  <% javascript_content_for :head do; javascript_tag do %>
+    $("#id").hide();
+  <% end; end %>
+
+
+=== Title Helper
+
+Provides an helper for managing page title in Rails views and layouts.
+
+  # Include the helper in your controller.
+  # You might want to include it in ApplicationController to make it available
+  # always and everywhere in your templates.
+  class ApplicationController < ActionController::Base
+    helperful :title
+  end
+
+  # Now you can use set a title in your action
+  # Example. index.html.rb
+  <h1><%= title 'This is a title' %></h1>
+
+  # And print the title with a :site decorator in your layout.
+  <html>
+    <head>
+      <title><%= title :site => 'My Cool Site!' %></title>
+    </head>
+    <body>
+      <%= yield %>
+    </body>
+  </html>
+
+Originally available at http://gist.github.com/3840.
+
+
+== Author
+
+* {Simone Carletti}[http://www.simonecarletti.com] <weppos@weppos.net>
+
+
+== Resources
+
+* {Homepage}[http://code.simonecarletti.com/helperful]
+* {Source}[http://github.com/weppos/helperful]
+* {Bugs & Features}[http://github.com/weppos/helperful/issues]
+
+
+== License
+
+Copyright (c) 2008-2009 Simone Carletti, Helperful is released under the MIT license.
+
